@@ -1,48 +1,183 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>About Us | Mubhin School</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+      body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f3f4f6;
+        color: #333;
+      }
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>mubhin || coders</title>
-  <style media="screen">
-    .jumbotron {
-      margin-top: 0px;
-      margin-bottom: 0px;
-    }
+      .hero-section {
+        background: linear-gradient(
+            rgba(0, 0, 0, 0.6),
+            rgba(0, 0, 0, 0.6)
+          ),
+          url("{% static 'images/school-hero.jpg' %}") no-repeat center center;
+        background-size: cover;
+        height: 70vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+        padding: 20px;
+      }
 
-    .jumbotron h1 {
-      text-align: center;
-    }
+      .hero-section h1 {
+        font-size: 4rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
 
-    .alert {
-      margin: 0px;
-    }
-  </style>
+      .hero-section p {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+      }
 
-  <title></title>
-</head>
+      .hero-section .btn-hero {
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 30px;
+        transition: background-color 0.3s ease;
+      }
 
-<body>
+      .hero-section .btn-hero:hover {
+        background-color: #0056b3;
+      }
 
-  {% include "school/navbar.html" %}
-  <br><br>
-  <center>
-    <h3 class='alert alert-success' style="margin-bottom:0px;">About Us !</h3>
-  </center>
-  <div class="jumbotron" style="margin-bottom: 0px;margin-top: 0px;">
-    <h1 class="display-4">Hello</h1>
-    <p class="lead">A service dedicated to Admin, Student and Teacher. We provide online resources, professional support
-      and guidance to all our students,teacher whenever, and from wherever they have chosen to study.</p>
-    <hr class="my-4">
-    <p>Explore our Website.</p>
-    <p class="lead">
-      <a class="btn btn-primary btn-lg" href="/" role="button">HOME</a>
-    </p>
-  </div>
+      .about-us {
+        text-align: center;
+        padding: 60px 20px;
+        background-color: #fff;
+        margin: -50px auto 20px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
 
-  {% include "school/footer.html" %}
-</body>
+      .about-us h2 {
+        font-size: 2.5rem;
+        color: #007bff;
+        margin-bottom: 20px;
+      }
 
+      .about-us p {
+        font-size: 1.1rem;
+        color: #555;
+        line-height: 1.8;
+        margin: 10px 0;
+      }
+
+      .features {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 40px 20px;
+      }
+
+      .feature-card {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+        flex: 1;
+        max-width: 300px;
+      }
+
+      .feature-card i {
+        font-size: 2.5rem;
+        color: #007bff;
+        margin-bottom: 10px;
+      }
+
+      .feature-card h4 {
+        font-size: 1.3rem;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .feature-card p {
+        font-size: 1rem;
+        color: #555;
+      }
+
+      footer {
+        background-color: #343a40;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+      }
+
+      footer a {
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    {% include "school/navbar.html" %}
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <h1>Welcome to Mubhin School</h1>
+      <p>Transforming education with innovation, excellence, and care.</p>
+      <a href="/" class="btn-hero">Explore More</a>
+    </div>
+
+    <!-- About Us Section -->
+    <div class="about-us">
+      <h2>About Us</h2>
+      <p>
+        At Mubhin School, we strive to empower students, teachers, and administrators
+        by providing a supportive and innovative learning environment. Our aim is to
+        nurture creativity, critical thinking, and lifelong learning.
+      </p>
+      <p>
+        We offer comprehensive online resources, personalized guidance, and a
+        community-driven approach to ensure every student achieves their full
+        potential.
+      </p>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features">
+      <div class="feature-card">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <h4>Expert Educators</h4>
+        <p>Learn from qualified and passionate educators who inspire excellence.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-laptop"></i>
+        <h4>Modern Technology</h4>
+        <p>Access cutting-edge tools and platforms for an enriched learning experience.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-users"></i>
+        <h4>Community Support</h4>
+        <p>Be part of a vibrant community dedicated to your success.</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    {% include "school/footer.html" %}
+  </body>
 </html>
