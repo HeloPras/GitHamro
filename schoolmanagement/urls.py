@@ -7,6 +7,14 @@ from django.contrib import admin
 from django.urls import path
 from school import views
 from django.contrib.auth.views import LoginView,LogoutView
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.views import View
+
+class CustomLogoutView(View):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect('')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,7 +34,7 @@ urlpatterns = [
 
 
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
-    path('logout', LogoutView.as_view(template_name='school/index.html'),name='logout'),
+    path('logout', CustomLogoutView.as_view(),name='logout'),
 
 
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
