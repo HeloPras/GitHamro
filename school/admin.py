@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Attendance,StudentExtra,TeacherExtra,Notice
-# Register your models here. (by sumit.luv)
+# Register your models here. (by .luv)
 class StudentExtraAdmin(admin.ModelAdmin):
     pass
 admin.site.register(StudentExtra, StudentExtraAdmin)
