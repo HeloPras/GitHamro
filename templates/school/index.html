@@ -4,77 +4,116 @@
 
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>School Management System</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  <style media="screen">
+    body {
+      font-family: "Arial", sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f8f9fa;
+    }
+
+    /* Jumbotron Section */
     .jumbotron {
-      margin-top: 0px;
-      margin-bottom: 0px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       background-image: url('{% static "images/bg2.jpg" %}');
       background-size: cover;
+      background-position: center;
       background-repeat: no-repeat;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
     }
 
     .jumbotron h1 {
-      text-align: center;
+      font-size: 3.5rem;
+      font-weight: bold;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
     }
 
-    .alert {
-      margin: 0px;
+    .jumbotron p {
+      font-size: 1.2rem;
+      margin: 20px 0;
     }
 
+    .btn-primary {
+      padding: 12px 25px;
+      font-size: 1rem;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
 
+    .btn-primary:hover {
+      background-color: #0056b3;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
 
+    /* Glow Effect */
     .glow {
-      font-size: 70px;
-      color: #ffffff;
-      text-align: center;
-      -webkit-animation: glow 1s ease-in-out infinite alternate;
-      -moz-animation: glow 1s ease-in-out infinite alternate;
-      animation: glow 1s ease-in-out infinite alternate;
+      font-size: 3rem;
+      animation: glow 1.5s ease-in-out infinite alternate;
     }
 
-    @-webkit-keyframes glow {
+    @keyframes glow {
       from {
-        text-shadow: 0 0 10px #eeeeee, 0 0 20px #000000, 0 0 30px #000000, 0 0 40px #000000, 0 0 50px #9554b3, 0 0 60px #9554b3, 0 0 70px #9554b3;
+        text-shadow: 0 0 10px #eee, 0 0 20px #555, 0 0 30px #555, 0 0 40px #555, 0 0 50px #9554b3;
       }
-
       to {
-        text-shadow: 0 0 20px #eeeeee, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+        text-shadow: 0 0 20px #eee, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6;
       }
+    }
+
+    /* Spacing Utility */
+    .spacer {
+      margin: 50px 0;
+    }
+
+    /* Footer Section */
+    footer {
+      background-color: #343a40;
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
     }
   </style>
-
 </head>
 
 <body>
+  <!-- Navbar -->
   {% include "school/navbar.html" %}
-  <br>
-  <br>
-  <div class="jumbotron" style="margin-bottom: 0px;margin-top: 0px;">
-    <br>
-    <h1 class="display-4 glow">Welcome</h1>
 
-    <br><br>
+  <!-- Jumbotron Section -->
+  <div class="jumbotron">
+    <h1 class="glow">Welcome</h1>
     <p>Knowledge is key to success.</p>
-    <br><br><br><br><br>
-    <p class="lead">
-      <a class="btn btn-primary btn-lg" href="/studentlogin" role="button">Log In </a>
-    </p>
-    <br><br>
+    <a class="btn-primary" href="/studentlogin" role="button">Log In</a>
   </div>
 
-  <br>
-  <br>
-  <br><br>
+  <!-- Spacer -->
+  <div class="spacer"></div>
 
+  <!-- Cards Section -->
   {% include "school/admin_teacher_student_card.html" %}
 
-  <br><br>
-  <br>
-  <br>
-  <br>
-  <br>
+  <!-- Spacer -->
+  <div class="spacer"></div>
+
+  <!-- Footer -->
   {% include "school/footer.html" %}
 </body>
 
