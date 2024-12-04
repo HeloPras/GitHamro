@@ -9,6 +9,7 @@ class TeacherExtra(models.Model):
     joindate=models.DateField(auto_now_add=True)
     mobile = models.CharField(max_length=40)
     status=models.BooleanField(default=False)
+    
     def __str__(self):
         return self.user.first_name
     @property
@@ -23,6 +24,7 @@ class TeacherExtra(models.Model):
 
 classes=[('one','one'),('two','two'),('three','three'),
 ('four','four'),('five','five'),('six','six'),('seven','seven'),('eight','eight'),('nine','nine'),('ten','ten')]
+
 class StudentExtra(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     roll = models.CharField(max_length=10)
