@@ -20,6 +20,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home_view,name=''),
 
+    # path('admin-view-grades', 1
+
     path('adminclick', views.adminclick_view),
     path('teacherclick', views.teacherclick_view),
     path('studentclick', views.studentclick_view),
@@ -63,13 +65,9 @@ urlpatterns = [
 
 
     path('admin-attendance', views.admin_attendance_view,name='admin-attendance'),
-    path('admin-courses', views.admin_courses_view,name='admin-courses'),
-
-    path('admin-take-grade/<str:cl>', views.admin_take_grade_view,name='admin-take-grade'),
-    path('admin-view-attendance/<str:cl>', views.admin_view_attendance_view,name='admin-view-attendance'),
-
     path('admin-take-attendance/<str:cl>', views.admin_take_attendance_view,name='admin-take-attendance'),
     path('admin-view-attendance/<str:cl>', views.admin_view_attendance_view,name='admin-view-attendance'),
+
 
     path('admin-fee', views.admin_fee_view,name='admin-fee'),
     path('admin-view-fee/<str:cl>', views.admin_view_fee_view,name='admin-view-fee'),
@@ -86,10 +84,10 @@ urlpatterns = [
 
     path('student-dashboard', views.student_dashboard_view,name='student-dashboard'),
     path('student-attendance', views.student_attendance_view,name='student-attendance'),
-
-
-
-
+    
+    path('teacher-take-grade/<str:cl>', views.teacher_record_grades_view, name='teacher-take-grade'),
+    path('teacher-courses', views.teacher_courses_view, name='teacher-courses'),
+    path('teacher-view-grade/<str:cl>', views.teacher_view_records, name='teacher-view-grade'),
     path('aboutus', views.aboutus_view),
     path('contactus', views.contactus_view),
 ]

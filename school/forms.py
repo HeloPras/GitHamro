@@ -40,9 +40,13 @@ class AttendanceForm(forms.Form):
     present_status=forms.ChoiceField( choices=presence_choices)
     date=forms.DateField()
 
+
+grades = [('A+', 'A+'), ('A', 'A'), ('B+', 'B+'), ('B', 'B'), ('C+', 'C+'), ('C', 'C'), ('F', 'F')]
+class GradeForm(forms.Form):
+    grade=forms.ChoiceField(choices=grades)
+
 class AskDateForm(forms.Form):
     date=forms.DateField()
-
 
 
 

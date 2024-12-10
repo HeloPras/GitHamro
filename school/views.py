@@ -1,20 +1,20 @@
-from django.shortcuts import render,redirect,reverse
-from . import forms,models
+from django.shortcuts import render, redirect, reverse, get_object_or_404
+from . import forms, models
 from django.db.models import Sum
 from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import login_required,user_passes_test
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 from django.core.mail import send_mail
+
 
 def home_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
-    return render(request,'school/index.html')
+    return render(request, 'school/index.html')
 
 
-
-#for showing signup/login button for teacher(by )
+# for showing signup/login button for teacher(by )
 def adminclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
@@ -411,10 +411,6 @@ def admin_attendance_view(request):
     return render(request,'school/admin_attendance.html')
 
 
-def admin_courses_view(request):
-    return render(request,'school/admin_courses.html')
-
-
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def admin_take_attendance_view(request,cl):
@@ -438,26 +434,7 @@ def admin_take_attendance_view(request,cl):
             print('form invalid')
     return render(request,'school/admin_take_attendance.html',{'students':students,'aform':aform})
 
-def admin_take_grade_view(request,cl):
-    students=models.StudentExtra.objects.all().filter(cl=cl)
-    print(students)
-    aform=forms.AttendanceForm()
-    if request.method=='POST':
-        form=forms.AttendanceForm(request.POST)
-        if form.is_valid():
-            Attendances=request.POST.getlist('present_status')
-            date=form.cleaned_data['date']
-            for i in range(len(Attendances)):
-                AttendanceModel=models.Attendance()
-                AttendanceModel.cl=cl
-                AttendanceModel.date=date
-                AttendanceModel.present_status=Attendances[i]
-                AttendanceModel.roll=students[i].roll
-                AttendanceModel.save()
-            return redirect('admin-attendance')
-        else:
-            print('form invalid')
-    return render(request,'school/admin_take_grade.html',{'students':students,'aform':aform})
+
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
@@ -518,8 +495,37 @@ def admin_notice_view(request):
     return render(request,'school/admin_notice.html',{'form':form})
 
 
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_view_student_grades(request, student_id):
+    # Fetch the student by ID (ensure the student exists)
+    student = get_object_or_404(models.StudentExtra, id=student_id)
+
+    # Fetch all grades for this student
+    grades = models.Grade.objects.filter(student=student)
+
+    # Organize the data into a list of tuples (course_name, grade)
+    mylist = [(grade.courses.name, grade.grade) for grade in grades]
+
+    return render(request, 'school/admin_view_student_grades.html', {
+        'student': student,
+        'mylist': mylist,
+    })
 
 
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_view_teacher_courses(request, teacher_id):
+    # Fetch the teacher by ID (ensure the teacher exists)
+    teacher = get_object_or_404(models.Teacher, id=teacher_id)
+
+    # Fetch all courses taught by this teacher
+    courses = models.Courses.objects.filter(teacher=teacher)  # Assuming 'teacher' is a ForeignKey in Courses model
+
+    return render(request, 'school/admin_view_teacher_courses.html', {
+        'teacher': teacher,
+        'courses': courses,
+    })
 
 
 
@@ -545,6 +551,17 @@ def teacher_dashboard_view(request):
 def teacher_attendance_view(request):
     return render(request,'school/teacher_attendance.html')
 
+@login_required(login_url='teacherlogin')
+@user_passes_test(is_teacher)
+def teacher_courses_view(request):
+    return render(request, 'school/teacher_courses.html')
+
+
+# @login_required(login_url='studentlogin')
+# @user_passes_test(is_student)
+# def teacher_courses_view(request):
+#     return render(request, 'school/student_courses.html')
+
 
 @login_required(login_url='teacherlogin')
 @user_passes_test(is_teacher)
@@ -569,6 +586,61 @@ def teacher_take_attendance_view(request,cl):
     return render(request,'school/teacher_take_attendance.html',{'students':students,'aform':aform})
 
 
+@login_required(login_url='teacherlogin')
+@user_passes_test(is_teacher)
+def teacher_record_grades_view(request, cl):
+    # Get all students for the specific class
+    students = models.StudentExtra.objects.filter(cl=cl)
+    courses = models.Courses.objects.all()  # Get all available courses (you can filter as needed)
+
+    # Create an empty list to hold the form instances for each student
+    grade_forms = []
+
+    if request.method == 'POST':
+        # Iterate over each student and create a form for each
+        for i in range(len(students)):
+            form = models.GradeForm(request.POST, prefix=f'grade_{i}')
+            if form.is_valid():
+                grade_instance = form.save(commit=False)
+                grade_instance.student = students[i]  # Associate the student
+                grade_instance.save()
+            else:
+                print('Form invalid:', form.errors)
+
+        # Redirect after successfully saving the grades
+        return redirect('teacher_take_grade.html')
+
+    # Create a form for each student (you can optionally pre-select courses)
+    for student in students:
+        grade_forms.append(models.GradeForm(initial={'student': student}))
+
+    return render(request, 'school/teacher_take_grade.html', {
+        'students': students,
+        'courses': courses,
+        'grade_forms': grade_forms,  # Send the forms to the template
+    })
+
+
+@login_required(login_url='teacherlogin')
+@user_passes_test(is_teacher)
+def teacher_view_records(request, cl):
+    # Get all students in the specific class
+    students = models.StudentExtra.objects.filter(cl=cl)
+    # Fetch all the grades for these students in the specified class
+    grades = models.Grade.objects.filter(student__in=students)
+
+    # To group the grades by student and course, we can organize it in a dictionary
+    grade_records = {}
+    for grade in grades:
+        if grade.student not in grade_records:
+            grade_records[grade.student] = {}
+        grade_records[grade.student][grade.courses] = grade.grade
+
+    return render(request, 'school/teacher_view_records.html', {
+        'students': students,
+        'grade_records': grade_records,
+        'class': cl,  # This can be displayed in the template to indicate which class
+    })
 
 @login_required(login_url='teacherlogin')
 @user_passes_test(is_teacher)
@@ -643,7 +715,22 @@ def student_attendance_view(request):
 
 
 
-
+@login_required(login_url='studentlogin')
+@user_passes_test(is_student)
+def student_grades_view(request):
+    # Fetch the student's data based on the logged-in user
+    studentdata = models.StudentExtra.objects.filter(user_id=request.user.id, status=True)
+    
+    if studentdata.exists():
+        student = studentdata[0]
+        # Fetch grades for the student, grouped by course
+        grades = models.Grade.objects.filter(student=student)
+        
+        # Organize the grades into a list of tuples (grade, course_name)
+        mylist = [(grade, grade.courses.name) for grade in grades]  # Assuming 'courses.name' exists
+        return render(request, 'school/student_view_grades_page.html', {'mylist': mylist})
+    else:
+        return render(request, 'school/student_view_grades_page.html', {'error': "Student data not found!"})
 
 
 
