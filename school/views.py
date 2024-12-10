@@ -411,6 +411,10 @@ def admin_attendance_view(request):
     return render(request,'school/admin_attendance.html')
 
 
+def admin_courses_view(request):
+    return render(request,'school/admin_courses.html')
+
+
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def admin_take_attendance_view(request,cl):
@@ -434,7 +438,26 @@ def admin_take_attendance_view(request,cl):
             print('form invalid')
     return render(request,'school/admin_take_attendance.html',{'students':students,'aform':aform})
 
-
+def admin_take_grade_view(request,cl):
+    students=models.StudentExtra.objects.all().filter(cl=cl)
+    print(students)
+    aform=forms.AttendanceForm()
+    if request.method=='POST':
+        form=forms.AttendanceForm(request.POST)
+        if form.is_valid():
+            Attendances=request.POST.getlist('present_status')
+            date=form.cleaned_data['date']
+            for i in range(len(Attendances)):
+                AttendanceModel=models.Attendance()
+                AttendanceModel.cl=cl
+                AttendanceModel.date=date
+                AttendanceModel.present_status=Attendances[i]
+                AttendanceModel.roll=students[i].roll
+                AttendanceModel.save()
+            return redirect('admin-attendance')
+        else:
+            print('form invalid')
+    return render(request,'school/admin_take_grade.html',{'students':students,'aform':aform})
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
