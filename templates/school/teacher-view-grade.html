@@ -46,8 +46,9 @@
         </thead>
         <tbody>
           {% for student in students %}
-            <tr>
+            
               {% for course in courses %}
+            <tr>
               <td>{{ student.get_name }}</td>
               <td>{{ student.roll }}</td>  
               <td>
@@ -65,8 +66,8 @@
                     {% endif %}
                   {% endfor %}
                 </td>
-              {% endfor %}
             </tr>
+              {% endfor %}
           {% endfor %}
         </tbody>
       </table>

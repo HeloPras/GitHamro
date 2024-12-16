@@ -2,12 +2,9 @@
 
 {% load widget_tweaks %}
 
-
-
 {% block content %}
 
 <head>
-
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -29,63 +26,58 @@
       text-align: center;
     }
   </style>
-
 </head>
 
-
-
-
-<form class="" method="post">
+<form method="post">
   <div class="container">
-
     <div class="row">
-
       <div class="panel panel-primary">
         <div class="panel-heading">
-          <h6 class="panel-title">Grade</h6>
-
+          <h6 class="panel-title">Record Grades</h6>
         </div>
 
         <table class="table table-hover" id="dev-table">
           <thead>
-
             <tr>
               <th>Student Name</th>
-              <th>Roll</th>
-              <th>Class</th>
               <th>Course</th>
               <th>Grade</th>
             </tr>
           </thead>
-
-
-          {% csrf_token %}
-          {%for student in students%}
-          <tr>
-            <td>{{student.get_name}}</td>
-            <td>{{student.get_name}}</td>
-            <td>{{student.get_name}}</td>
-            <td>{{student.get_name}}</td>
-            <td>{{aform.present_status}}</td>
-          </tr>
-          {%endfor%}
-
-
-
+          <tbody>
+            {% csrf_token %}
+            {% for student in students %}
+            <tr>
+              <td>{{ student.get_name }}</td>
+              <td>
+                <select name="course" class="form-control" required>
+                  {% for course in courses %}
+                  <option value="{{ course.id }}">{{ course.name }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+              <td>
+                <select name="grade" class="form-control" required>
+                  {% for grade, display in grades %}
+                  <option value="{{ grade }}">{{ display }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
         </table>
-        {% render_field aform.date class="form-control" placeholder="Enter Date mm/dd/yyyy" %}
-        <input type="submit" style="margin-left: 200px;
 
-    margin-top: 20px;
-    margin-bottom: 20px;    background-color: #ffec00;" name="submit" value="submit">
+        <div class="form-group">
+          {% render_field aform.date class="form-control" placeholder="Enter Date mm/dd/yyyy" %}
+        </div>
+
+        <div class="btnSubmit">
+          <input type="submit" class="btn btn-primary" name="submit" value="Submit Grades">
+        </div>
       </div>
-
-
     </div>
   </div>
 </form>
-
-
-
 
 {% endblock content %}

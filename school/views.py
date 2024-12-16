@@ -686,9 +686,9 @@ def admin_record_grades_view(request, cl):
                 grade_instance.grade = grades[i]
                 grade_instance.save()
 
-        return redirect('teacher-courses')  # Redirect after saving grades
+        return redirect('admin-courses')  # Redirect after saving grades
 
-    return render(request, 'school/teacher_take_grade.html', {
+    return render(request, 'school/admin_take_grade.html', {
         'students': students,
         'courses': courses,  # Pass available courses to template
         'grades': [('A+', 'A+'), ('A', 'A'), ('B+', 'B+'), ('B', 'B'), ('C+', 'C+'), ('C', 'C'), ('F', 'F')],  # Pass grade choices
@@ -722,7 +722,7 @@ def admin_view_records(request, cl):
             # else:
             #     grade_records = ''  # Blank if no grade exists
 
-    return render(request, 'school/teacher-view-grade.html', {
+    return render(request, 'school/admin-view-grade.html', {
         'students': students,
         'grade_records': grade_records,
         'courses': courses,  # Pass available courses to the template
