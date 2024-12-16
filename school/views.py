@@ -556,7 +556,10 @@ def teacher_attendance_view(request):
 def teacher_courses_view(request):
     return render(request, 'school/teacher_courses1.html')
 
-
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_courses_view(request):
+    return render(request, 'school/admin_courses.html')
 # @login_required(login_url='studentlogin')
 # @user_passes_test(is_student)
 # def teacher_courses_view(request):
@@ -634,16 +637,20 @@ def teacher_view_records(request, cl):
     grades = models.Grade.objects.filter(student__in = students, courses__in = courses)
 
     # Create a dictionary to store grade records for each student
-    # grade_records = {}
+    grade_records = []
+    tup = ()
     for student in students:
         # grade_records[student] = {}
         for course in courses:
             # Find the grade for this student in this course, or set it to an empty string if not found
             grade_instance = grades.filter(student=student, courses=course).first()
-            if grade_instance:
-                grade_records = grade_instance.grade
-            else:
-                grade_records = ''  # Blank if no grade exists
+
+            tup = (student, course, grade_instance.grade)
+            grade_records.append(tup)
+            # if grade_instance:
+            #     grade_records = grade_instance.grade
+            # else:
+            #     grade_records = ''  # Blank if no grade exists
 
     return render(request, 'school/teacher-view-grade.html', {
         'students': students,
@@ -652,6 +659,106 @@ def teacher_view_records(request, cl):
         'class': cl,  # Display the class name in the template
     })
 
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_record_grades_view(request, cl):
+    # Get students and courses for the specific class
+    students = models.StudentExtra.objects.filter(cl=cl)
+    courses = models.Courses.objects.all()
+
+    if request.method == 'POST':
+        # Gather form data from POST request
+        course_id = request.POST.get('course')  # Get selected course
+        grades = request.POST.getlist('grade')  # List of grades for each student
+        course = models.Courses.objects.get(id=course_id)
+
+        # Save grades for each student or update existing grade
+        for i, student in enumerate(students):
+            # Check if a Grade instance already exists for this student and course
+            grade_instance, created = models.Grade.objects.get_or_create(
+                student=student,
+                courses=course,
+                defaults={'grade': grades[i]}
+            )
+
+            # If the grade instance already exists, update it
+            if not created:
+                grade_instance.grade = grades[i]
+                grade_instance.save()
+
+        return redirect('teacher-courses')  # Redirect after saving grades
+
+    return render(request, 'school/teacher_take_grade.html', {
+        'students': students,
+        'courses': courses,  # Pass available courses to template
+        'grades': [('A+', 'A+'), ('A', 'A'), ('B+', 'B+'), ('B', 'B'), ('C+', 'C+'), ('C', 'C'), ('F', 'F')],  # Pass grade choices
+    })
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_view_records(request, cl):
+    # Get all students in the specific class
+    students = models.StudentExtra.objects.filter(cl=cl)
+
+    courses = models.Courses.objects.all()
+
+    # Fetch all the grades for these students in the specified class
+    grades = models.Grade.objects.filter(student__in = students, courses__in = courses)
+
+    # Create a dictionary to store grade records for each student
+    grade_records = []
+    tup = ()
+    for student in students:
+        # grade_records[student] = {}
+        for course in courses:
+            # Find the grade for this student in this course, or set it to an empty string if not found
+            grade_instance = grades.filter(student=student, courses=course).first()
+
+            tup = (student, course, grade_instance.grade)
+            grade_records.append(tup)
+            # if grade_instance:
+            #     grade_records = grade_instance.grade
+            # else:
+            #     grade_records = ''  # Blank if no grade exists
+
+    return render(request, 'school/teacher-view-grade.html', {
+        'students': students,
+        'grade_records': grade_records,
+        'courses': courses,  # Pass available courses to the template
+        'class': cl,  # Display the class name in the template
+    })
+
+
+@login_required(login_url='studentlogin')
+@user_passes_test(is_student)
+def student_view_records(request, id):
+    student = models.StudentExtra.objects.get(user_id=id)
+
+    courses = models.Courses.objects.all()
+
+    grades = models.Grade.objects.filter(student=student)
+
+    grade_records = []
+    tup = ()
+    # for student in students:
+    #     # grade_records[student] = {}
+    for course in courses:
+        # Find the grade for this student in this course, or set it to an empty string if not found
+        grade_instance = grades.get(student=student, courses=course)
+
+        tup = (student, course, grade_instance.grade)
+        grade_records.append(tup)
+            # if grade_instance:
+            #     grade_records = grade_instance.grade
+            # else:
+            #     grade_records = ''  # Blank if no grade exists
+
+    return render(request, 'school/student_view_grade.html', {
+        'students': student,
+        'grade_records': grade_records,
+        'courses': courses,  # Pass available courses to the template
+    })
 
 @login_required(login_url='teacherlogin')
 @user_passes_test(is_teacher)

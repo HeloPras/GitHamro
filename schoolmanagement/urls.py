@@ -88,6 +88,10 @@ urlpatterns = [
     path('teacher-take-grade/<str:cl>', views.teacher_record_grades_view, name='teacher-take-grade'),
     path('teacher-courses', views.teacher_courses_view, name='teacher-courses'),
     path('teacher-view-grade/<str:cl>', views.teacher_view_records, name='teacher-view-grade'),
+    path('admin-view-grade/<str:cl>', views.admin_view_records, name='admin-view-grade'),
+    path('admin-take-grade/<str:cl>', views.admin_record_grades_view, name='admin-take-grade'),
+    path('admin-courses', views.admin_courses_view, name='admin-courses'),  
+    path('student-view-grade/<int:id>', views.student_view_records, name='student-view-grade'),
     path('aboutus', views.aboutus_view),
     path('contactus', views.contactus_view),
 ]
